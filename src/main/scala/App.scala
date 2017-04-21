@@ -56,9 +56,15 @@ object App {
           val pool = records.builds
             .filter(r => r.result == "SUCCESS" && end.minusDays(lookback).isBefore(r.timestamp))
 
-          pool.foldLeft(0L)((z, a) => {
-            z + a.duration
-          }).toDouble / pool.length.toDouble
+          if (pool.isEmpty) {
+            0.0D
+          }
+          else {
+            pool.foldLeft(0L)((z, a) => {
+              z + a.duration
+            }).toDouble / pool.length.toDouble
+
+          }
         }
     }
   }
@@ -85,6 +91,8 @@ object App {
       wsClient.close()
 
       print(Json.prettyPrint(Json.toJson(Results(sbt, cbt, "test"))))
+
+//      println(Results(sbt, cbt, "test").toString)
 
       System.exit(0)
     }
